@@ -2,20 +2,21 @@
 
 # Left click
 if [[ "${BLOCK_BUTTON}" -eq 1 ]]; then
-  amixer -q sset Master 5%+
+    pactl set-sink-volume @DEFAULT_SINK@ +5%
 # Middle click
 elif [[ "${BLOCK_BUTTON}" -eq 2 ]]; then
-  amixer -q sset Master toggle
+    pactl set-sink-mute @DEFAULT_SINK@ toggle
 # Right click
 elif [[ "${BLOCK_BUTTON}" -eq 3 ]]; then
-  amixer -q sset Master 5%-
+    pactl set-sink-volume @DEFAULT_SINK@ -5%
 fi
 
 statusLine=$(amixer get Master | tail -n 1)
-status=$(echo "${statusLine}" | grep -wo "on")
-volume=$(echo "${statusLine}" | awk -F ' ' '{print $5}' | tr -d '[]%')
+statusCmd="pactl list sinks"
+mute=$($statusCmd | grep Mute: | grep -wo no)
+volume=$($statusCmd | grep Volume | head -n1 | awk -F '/' '{print $2}' | tr -d ' %')
 
-if [[ "${status}" == "on" ]]; then
+if [[ "${mute}" == "no" ]]; then
   echo "${volume}%"
   echo "${volume}%"
   echo ""

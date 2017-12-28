@@ -1,16 +1,15 @@
 #!/bin/bash
 # Source: http://www.onlamp.com/pub/a/linux/2000/11/16/LinuxAdmin.html
 
-INSTANCE="${BLOCK_INSTANCE}"
+DISPLAY=$(echo "${BLOCK_INSTANCE}" | awk -F ';' '{print $2}')
+INSTANCE=$(echo "${BLOCK_INSTANCE}" | awk -F ';' '{print $1}')
+
 # If you don't like you can use any other IP
 INTERFACE="$(ip route get 8.8.8.8 | grep -Po '(?<=(dev )).*(?= src)')"
 
 if [[ "${INSTANCE}" = "" ]]; then
-  INSTANCE="${INTERFACE};both"
+  INSTANCE="${INTERFACE}"
 fi
-
-DISPLAY=$(echo "${INSTANCE}" | awk -F ';' '{print $2}')
-INSTANCE=$(echo "${INSTANCE}" | awk -F ';' '{print $1}')
 
 if [[ "${DISPLAY}" = "" ]]; then
   DISPLAY="both"

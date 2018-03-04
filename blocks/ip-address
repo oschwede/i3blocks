@@ -1,10 +1,16 @@
 #!/bin/bash
 
-IP_ADDRESS="$(hostname --ip-addresses)"
-
-if [[ "${IP_ADDRESS}" == "" ]]; then
-    IP_ADDRESS=$(ip route get 1 | awk '{print $NF;exit}')
+if [[ "$BLOCK_INSTANCE" = *6* ]]; then
+    target="1::"
+else
+    target="1"
 fi
+
+get_ip() {
+    ip route get "${1:-1}" | grep -o "src [^[:space:]]\+" | sed 's|src ||g'
+}
+
+IP_ADDRESS="$(get_ip $target)"
 
 if [[ "${IP_ADDRESS}" != "" ]]; then
   echo "${IP_ADDRESS}"

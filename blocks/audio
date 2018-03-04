@@ -13,10 +13,10 @@ fi
 
 statusLine=$(amixer get Master | tail -n 1)
 statusCmd="pactl list sinks"
-mute=$($statusCmd | grep Mute: | grep -wo no)
+mute=$($statusCmd | grep Mute: | grep -wo yes)
 volume=$($statusCmd | grep Volume | head -n1 | awk -F '/' '{print $2}' | tr -d ' %')
 
-if [[ "${mute}" == "no" ]]; then
+if [[ "${mute}" == "" ]]; then
   echo "${volume}%"
   echo "${volume}%"
   echo ""
